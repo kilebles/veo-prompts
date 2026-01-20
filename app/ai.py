@@ -1,4 +1,3 @@
-import time
 import anthropic
 
 from app.settings import log, settings
@@ -9,7 +8,7 @@ client = anthropic.Anthropic(api_key=settings.anthropic_token)
 
 
 def generate_prompt(paragraph: str) -> str:
-    """Generate a Veo 3 prompt from a paragraph"""
+    """Generate a Veo 3 prompt from a paragraph."""
     try:
         response = client.messages.create(
             model="claude-3-haiku-20240307",
@@ -27,7 +26,7 @@ def generate_prompts(
     paragraphs: list[str],
     indices: list[int] | None = None,
 ) -> dict[int, str]:
-    """Generate Veo 3 prompts for selected paragraphs"""
+    """Generate Veo 3 prompts for selected paragraphs."""
     if indices is None:
         indices = list(range(1, len(paragraphs) + 1))
 
@@ -42,9 +41,6 @@ def generate_prompts(
         log.info(f"Processing {count}/{total} (paragraph {idx})")
         prompt = generate_prompt(paragraphs[idx - 1])
         results[idx] = prompt
-
-        if count < total:
-            time.sleep(1)
 
     log.info(f"Generated {len([p for p in results.values() if p])} prompts")
     return results
