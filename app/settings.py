@@ -1,7 +1,5 @@
 import logging
-import re
 from pathlib import Path
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logging.basicConfig(
@@ -35,13 +33,17 @@ class Settings(BaseSettings):
     def output_file(self, name: str) -> Path:
         return self.output_dir / name
 
-    def read_numbered_paragraphs(self, file_path: Path) -> list[str]:
+    def read_paragraphs(self, file_path: Path) -> list[str]:
         log.info(f"Reading file: {file_path.name}")
-        text = file_path.read_text(encoding="utf-8")
 
-        pattern = re.compile(r"^\d+\.\s*", re.MULTILINE)
-        paragraphs = pattern.split(text)
-        paragraphs = [p.strip() for p in paragraphs if p.strip()]
+        if file_path.suffix == ".docx":
+            from docx import Document
+
+            doc = Document(file_path)
+            paragraphs = [p.text.strip() for p in doc.paragraphs if p.text.strip()]
+        else:
+            text = file_path.read_text(encoding="utf-8")
+            paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
 
         log.info(f"Parsed {len(paragraphs)} paragraphs")
         return paragraphs
