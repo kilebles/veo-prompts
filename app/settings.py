@@ -1,12 +1,24 @@
 import logging
-
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_BASE_DIR = Path(__file__).resolve().parent.parent
+_LOG_DIR = _BASE_DIR / "logs"
+_LOG_DIR.mkdir(exist_ok=True)
+_LOG_FILE = _LOG_DIR / "app.log"
+
+# Очищаем лог-файл при каждом запуске
+_LOG_FILE.write_text("")
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    datefmt="%H:%M:%S",
+    format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(_LOG_FILE, encoding="utf-8"),
+    ],
 )
 log = logging.getLogger(__name__)
 
@@ -19,6 +31,10 @@ class Settings(BaseSettings):
     )
 
     anthropic_token: str
+    google_labs_url: str
+    google_labs_login: str
+    google_labs_password: str
+    proxy: str = ""
 
     base_dir: Path = Path(__file__).resolve().parent.parent
     data_dir: Path = base_dir / "data"

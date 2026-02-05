@@ -16,3 +16,26 @@ data/input/*
 
 data/output/*
 !data/output/.gitkeep
+
+# Browser state and automation
+.browser_state/
+.generation_progress.json
+
+# Logs
+logs/
+
+# Debug and temporary files
+debug_*.py
+debug_*.png
+*.log
+*.png
+test_*.py
+find_*.py
+generate_*.py
+resume_*.py
+
+# macOS
+.DS_Store
+
+# Claude
+.claude/

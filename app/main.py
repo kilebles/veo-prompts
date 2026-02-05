@@ -1,10 +1,11 @@
 import csv
+import sys
 
 from app.ai import generate_prompts
 from app.settings import log, settings
 
 
-def main(indices: list[int] | None = None) -> None:
+def main(indices: list[int] | None = None, generate_videos: bool = False) -> None:
     input_files = settings.input_files()
     input_files = [f for f in input_files if f.name != ".gitkeep"]
 
@@ -27,6 +28,14 @@ def main(indices: list[int] | None = None) -> None:
 
     log.info(f"Saved to {output_path.name}")
 
+    # Запуск автоматизации генерации видео
+    if generate_videos:
+        log.info("Starting video generation automation...")
+        from app.veo_automation import run_video_generation
+
+        run_video_generation(output_path)
+
 
 if __name__ == "__main__":
-    main()
+    generate_videos = "--generate-videos" in sys.argv or "-g" in sys.argv
+    main(generate_videos=generate_videos)
