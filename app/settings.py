@@ -8,6 +8,7 @@ _LOG_DIR = _BASE_DIR / "logs"
 _LOG_DIR.mkdir(exist_ok=True)
 _LOG_FILE = _LOG_DIR / "app.log"
 
+
 # Очищаем лог-файл при каждом запуске
 _LOG_FILE.write_text("")
 
